@@ -5,14 +5,12 @@ Data Tracking test with `DVC + Git + Azure`.
 This repository demonstrates how to version control datasets using [DVC](), manage experiments with **Git branches**, and push/pull data to/from **Azure Blob Storage**.
 
 - [srta-data-tracker-test](#srta-data-tracker-test)
-  - [First time Setup instructions](#first-time-setup-instructions)
+  - [Getting Started](#getting-started)
+  - [First time setup instructions for completely new repo](#first-time-setup-instructions-for-completely-new-repo)
     - [1. Git \& DVC Initialization](#1-git--dvc-initialization)
     - [2. Configure Azure Remote](#2-configure-azure-remote)
-      - [A. Using SAS Token (Recommended)](#a-using-sas-token-recommended)
-      - [B. Using Connection String](#b-using-connection-string)
-      - [C. Using Storage Account + Key](#c-using-storage-account--key)
-    - [3. Track and Push Data](#3-track-and-push-data)
-  - [Getting Started on a different location](#getting-started-on-a-different-location)
+      - [Using SAS Token (Recommended)](#using-sas-token-recommended)
+  - [Track and Push Data](#track-and-push-data)
   - [On Data Update](#on-data-update)
     - [Step 1: Re-track the file](#step-1-re-track-the-file)
     - [Step 2: Commit the change](#step-2-commit-the-change)
@@ -23,7 +21,21 @@ This repository demonstrates how to version control datasets using [DVC](), mana
 
 ---
 
-## First time Setup instructions
+## Getting Started
+
+After cloning:
+
+```bash
+# git clone repo...
+pip install dvc[azure] # inside a virtual env
+dvc remote modify --local azureremote sas_token "<your-sas-token>"
+# if blob url is https://srtastorageaccount.blob.core.windows.net/datasets/subdata-folder?
+# the storage account name is "srtastorageaccount"
+dvc remote modify --local azureremote account_name "<your-storage-account-name>"
+dvc pull
+```
+
+## First time setup instructions for completely new repo
 
 ### 1. Git & DVC Initialization
 
@@ -37,9 +49,9 @@ git commit -m "Initialize DVC"
 
 ### 2. Configure Azure Remote
 
-[Official documentation](https://dvc.org/doc/user-guide/data-management/remote-storage/azure-blob-storage). Note: any name can bechosen instead of `azureremote`. Pick one method below:
+Note: any name can bechosen instead of `azureremote`. Pick one method below:
 
-#### A. Using SAS Token (Recommended)
+#### Using SAS Token (Recommended)
 
 ```bash
 # if blob url is https://srtastorageaccount.blob.core.windows.net/datasets/subdata-folder?
@@ -50,38 +62,16 @@ dvc remote modify --local azureremote sas_token "<your-sas-token>"
 dvc remote modify --local azureremote account_name "<your-storage-account-name>"
 ```
 
-#### B. Using Connection String
+The other options: `Using Connection String` or `Using Storage Account + Key` are provided in the [Official documentation](https://dvc.org/doc/user-guide/data-management/remote-storage/azure-blob-storage).
 
-```bash
-dvc remote add -d azureremote azure://<container-name>/<path>
-dvc remote modify --local azureremote connection_string 'DefaultEndpointsProtocol=https;...'
-```
-
-#### C. Using Storage Account + Key
-
-```bash
-dvc remote add -d azureremote azure://<container-name>/<path>
-dvc remote modify --local azureremote account_name <your-account-name>
-dvc remote modify --local azureremote account_key <your-account-key>
-```
-
-### 3. Track and Push Data
+## Track and Push Data
 
 ```bash
 dvc add data/my_dataset.csv
 git add data/my_dataset.csv.dvc data/.gitignore
 git commit -m "Add new dataset"
+git push
 dvc push
-```
-
-##  Getting Started on a different location
-
-After cloning:
-
-```bash
-# git clone repo...
-pip install dvc[azure] # inside a virtual env
-dvc pull
 ```
 
 ## On Data Update
@@ -92,7 +82,7 @@ If you edit data/my_dataset.csv after it’s been added to DVC:
 
 ```bash
 dvc add data/my_dataset.csv
-This updates the DVC file with the new version's hash.
+# This updates the DVC file with the new version's hash.
 ```
 
 ### Step 2: Commit the change
