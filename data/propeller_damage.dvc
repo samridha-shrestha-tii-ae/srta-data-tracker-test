@@ -1,0 +1,6 @@
+outs:
+- md5: aee5043bb474747dacd93b9afac6cce0.dir
+  size: 8934505
+  nfiles: 9
+  hash: md5
+  path: propeller_damage
