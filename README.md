@@ -17,6 +17,7 @@ This repository demonstrates how to version control datasets using [DVC](), mana
     - [Step 3: Push updated data](#step-3-push-updated-data)
   - [Branching for Experiments](#branching-for-experiments)
   - [Version Rollback](#version-rollback)
+  - [Azcopy command reference](#azcopy-command-reference)
   - [Notes](#notes)
 
 ---
@@ -96,7 +97,7 @@ git commit -m "Update dataset after modification"
 
 ```bash
 dvc push
-DVC uploads the new version to Azure, keeping older versions safely stored.
+# DVC uploads the new version to Azure, keeping older versions safely stored.
 ```
 
 ## Branching for Experiments
@@ -134,6 +135,20 @@ dvc checkout
 dvc gc -w -v
 ```
 This removes data no longer referenced by any current version or branch.
+
+## Azcopy command reference
+
+```bash
+export AD_TOKEN="TOKEN"
+# sample storage location
+export STORAGEACCOUNT="https://srtastorageaccount.blob.core.windows.net/anomaly-detection"
+# copy from azure blob storage to local
+azcopy copy "$STORAGEACCOUNT/file.txt?$AD_TOKEN" "./downloaded-file.txt"
+# copy from local to azure blob storage
+azcopy copy "./test_upload" "$STORAGEACCOUNT/test_upload?$AD_TOKEN" --recursive
+# list files in azure blob storage
+azcopy list "$STORAGEACCOUNT?$AD_TOKEN"
+```
 
 ## Notes
 
